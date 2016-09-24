@@ -1,0 +1,7 @@
+{
+  "name": "rochd",
+  "short_name": "rochd",
+  "description": "front appli minbarapp",
+  "start_url": "/",
+  "display": "standalone"
+}
