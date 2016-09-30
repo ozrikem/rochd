@@ -1,27 +1,198 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
+<link rel="import" href="lorem-with-title.html">
 
 <dom-module id="rochd-app">
   <template>
-    <style>
+    <style include="app-grid-style">
       :host {
         display: block;
+        --app-grid-columns: 1;
+      }
+      .main-paper-tabs {
+        background-color: #13171E;
+        --paper-tabs-selection-bar-color: red;
+      }
+      .secondary-paper-tabs {
+        background-color: black;
+        margin-left: 280px;
+        padding-right: 150px;
+      }
+      paper-tab {
+        color: white;
+      }
+      img.menu-icon {
+        width: 50px;
+        height: 50px;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+    
+    <!-- Main menu -->
+    <paper-tabs class="main-paper-tabs" selected="{{selectedMain}}">
+      <paper-tab disabled>
+        <img src="../../images/logo.png" class="menu-icon"></img>
+      </paper-tab>
+      <paper-tab>Accueil</paper-tab>
+      <paper-tab>Exception</paper-tab>
+      <paper-tab>Concept</paper-tab>
+      <paper-tab>Projection</paper-tab>
+      <paper-tab>Gamification</paper-tab>
+      <paper-tab>Open Source</paper-tab>
+      <paper-tab>Pol XXIe s</paper-tab>
+      <paper-tab disabled>
+        <img src="../../images/user.png" class="menu-icon"></img>
+      </paper-tab>
+    </paper-tabs>
+    
+    <!-- Routing to submenus -->
+    <iron-pages selected="[[_decrement(selectedMain)]]">
+      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+        no-bar>
+        <paper-tab>BonneP</paper-tab>
+        <paper-tab>Trouver</paper-tab>
+        <paper-tab>Media</paper-tab>
+        <paper-tab>A propos</paper-tab>
+      </paper-tabs>
+      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+        no-bar>
+        <paper-tab>Introduction text</paper-tab>
+        <paper-tab>TimelineJS</paper-tab>
+        <paper-tab>Tableaux et schémas</paper-tab>
+        <paper-tab>Tribunes</paper-tab>
+      </paper-tabs>
+      <div></div>
+      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+        no-bar>
+        <paper-tab>Com WT</paper-tab>
+        <paper-tab>Atlantic</paper-tab>
+        <paper-tab>IAS</paper-tab>
+      </paper-tabs>
+      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+        no-bar>
+        <paper-tab>Doctrine</paper-tab>
+        <paper-tab>Concept</paper-tab>
+      </paper-tabs>
+      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+        no-bar>
+        <paper-tab>Initiatives MA</paper-tab>
+        <paper-tab>Bibliographie</paper-tab>
+        <paper-tab>Trouver des sources</paper-tab>
+      </paper-tabs>
+      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+        no-bar>
+        <paper-tab>M chat Net</paper-tab>
+        <paper-tab>Data Pol</paper-tab>
+        <paper-tab>Pirate</paper-tab>
+      </paper-tabs>
+    </iron-pages>
+    
+    <!-- Routing to page content -->
+    <iron-pages id="submenusroutes" selected="[[_decrement(selectedMain)]]">
+      <div class="app-grid">
+        <lorem-with-title id="bonnep" title="BonneP"></lorem-with-title>
+        <lorem-with-title id="find" title="Trouver"></lorem-with-title>
+        <lorem-with-title id="media" title="Media"></lorem-with-title>
+        <lorem-with-title id="about" title="A propos"></lorem-with-title>
+      </div>
+      <div class="app-grid">
+        <lorem-with-title id="intro" title="Introduction text"></lorem-with-title>
+        <lorem-with-title id="timelinejs" title="TimelineJS"></lorem-with-title>
+        <lorem-with-title id="tableschemes" title="Tableaux et schémas"></lorem-with-title>
+        <lorem-with-title id="tribunes" title="Tribunes"></lorem-with-title>
+      </div>
+      <div class="app-grid">
+        <lorem-with-title id="concepts" title="Concepts"></lorem-with-title>
+      </div>
+      <div class="app-grid">
+        <lorem-with-title id="comwt" title="Com WT"></lorem-with-title>
+        <lorem-with-title id="atlantic" title="Atlantic"></lorem-with-title>
+        <lorem-with-title id="ias" title="IAS"></lorem-with-title>
+      </div>
+      <div class="app-grid">
+        <lorem-with-title id="doctrine" title="Doctrine"></lorem-with-title>
+        <lorem-with-title id="concept" title="Concept"></lorem-with-title>
+      </div>
+      <div class="app-grid">
+        <lorem-with-title id="initiativesma" title="Initiatives MA"></lorem-with-title>
+        <lorem-with-title id="bibliography" title="Bibliographie"></lorem-with-title>
+        <lorem-with-title id="findsources" title="Trouver des sources"></lorem-with-title>
+      </div>
+      <div class="app-grid">
+        <lorem-with-title id="mchatnet" title="M chat Net"></lorem-with-title>
+        <lorem-with-title id="datapol" title="Data Pol"></lorem-with-title>
+        <lorem-with-title id="pirate" title="Pirate"></lorem-with-title>
+      </div>
+    </iron-pages>
+    
   </template>
 
   <script>
     Polymer({
-
-      is: 'rochd-app',
-
+      is: "rochd-app",
       properties: {
-        prop1: {
-          type: String,
-          value: 'rochd-app',
+        // Each row of the following table contains the list of items in the submenu,
+        // for each menu
+        subMenusMap: Array,
+        
+        // Index of the selected item in the main menu
+        // Warning: starts at 1
+        selectedMain: {
+          type: Number,
+          value: 1
         },
+        
+        // Index of the selected item in the secondary menu
+        selectedSecond: {
+          type: Number,
+          value: 0
+        }
       },
-
+      _decrement: function(n) {
+        return n-1;
+      },
+      ready: function() {
+        // Sub-menus map initialization
+        var subMenusRoutes = document.querySelector("#submenusroutes");
+        this.subMenusMap = [];
+        for (var routeIdx = 0; routeIdx < subMenusRoutes.childElementCount; routeIdx++) {
+          var route = subMenusRoutes.children[routeIdx];
+          var items = [];
+          for (var componentIdx = 0; componentIdx < route.childElementCount;
+            componentIdx++) {
+            items.push(route.children[componentIdx].id);
+          }
+          
+          this.subMenusMap.push(items);
+        }
+        
+        // Makes the submenu items scroll to the right content section
+        document.querySelector(".secondary-paper-tabs").addEventListener(
+          "iron-select", function() {
+          var app = document.querySelector("rochd-app");
+          document.querySelector("#" + app.subMenusMap[app.selectedMain-1]
+            [app.selectedSecond])
+            .scrollIntoView();
+          }
+        );
+      },
+      
+      // This function can be used from anywhere in the app in order to navigate to a
+      // particular component (it takes its id as an argument)
+      viewAndScrollTo: function(id) {
+        var subMenuIdx = -1;
+        var itemIdx = -1;
+        while (itemIdx < 0 && ++subMenuIdx < this.subMenusMap.length)
+          itemIdx = this.subMenusMap[subMenuIdx].indexOf(id);
+        
+        if (itemIdx >= 0) {
+          this.selectedMain = subMenuIdx+1;
+          this.selectedSecond = itemIdx;
+        } else {
+          console.error("Component with id '" + id + "' has not been found");
+        }
+      }
     });
   </script>
 </dom-module>
