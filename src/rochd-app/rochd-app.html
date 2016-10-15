@@ -1,4 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/app-route/app-location.html">
+<link rel="import" href="../../bower_components/app-route/app-route.html">
 <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../../bower_components/app-layout/app-grid/app-grid-style.html">
@@ -12,6 +14,10 @@
         --app-grid-columns: 1;
       }
       .main-paper-tabs {
+        /* Canceling default margin */
+        margin-left: -8px;
+        margin-top: -8px;
+        
         background-color: #13171E;
         --paper-tabs-selection-bar-color: red;
       }
@@ -27,66 +33,83 @@
         width: 50px;
         height: 50px;
       }
+      #submenusroutes {
+        padding-top: 100px;
+      }
+      #header-menus {
+        width: 100%;
+        position: fixed;
+      }
     </style>
     
-    <!-- Main menu -->
-    <paper-tabs class="main-paper-tabs" selected="{{selectedMain}}">
-      <paper-tab disabled>
-        <img src="../../images/logo.png" class="menu-icon"></img>
-      </paper-tab>
-      <paper-tab>Accueil</paper-tab>
-      <paper-tab>Exception</paper-tab>
-      <paper-tab>Concept</paper-tab>
-      <paper-tab>Projection</paper-tab>
-      <paper-tab>Gamification</paper-tab>
-      <paper-tab>Open Source</paper-tab>
-      <paper-tab>Pol XXIe s</paper-tab>
-      <paper-tab disabled>
-        <img src="../../images/user.png" class="menu-icon"></img>
-      </paper-tab>
-    </paper-tabs>
+    <app-location route="{{route}}"></app-location>
+    <app-route
+      route="{{route}}"
+      pattern="/:page"
+      data="{{routeData}}"
+      tail="{{routeTail}}">
+    </app-route>
     
-    <!-- Routing to submenus -->
-    <iron-pages selected="[[_decrement(selectedMain)]]">
-      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
-        no-bar>
-        <paper-tab>BonneP</paper-tab>
-        <paper-tab>Trouver</paper-tab>
-        <paper-tab>Media</paper-tab>
-        <paper-tab>A propos</paper-tab>
-      </paper-tabs>
-      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
-        no-bar>
-        <paper-tab>Introduction text</paper-tab>
-        <paper-tab>TimelineJS</paper-tab>
-        <paper-tab>Tableaux et schémas</paper-tab>
-        <paper-tab>Tribunes</paper-tab>
-      </paper-tabs>
-      <div></div>
-      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
-        no-bar>
-        <paper-tab>Com WT</paper-tab>
-        <paper-tab>Atlantic</paper-tab>
-        <paper-tab>IAS</paper-tab>
-      </paper-tabs>
-      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
-        no-bar>
-        <paper-tab>Doctrine</paper-tab>
+    <div id="header-menus">
+      <!-- Main menu -->
+      <paper-tabs class="main-paper-tabs" selected="{{selectedMain}}">
+        <paper-tab disabled>
+          <img src="../../images/logo.png" class="menu-icon"></img>
+        </paper-tab>
+        <paper-tab>Accueil</paper-tab>
+        <paper-tab>Exception</paper-tab>
         <paper-tab>Concept</paper-tab>
+        <paper-tab>Projection</paper-tab>
+        <paper-tab>Gamification</paper-tab>
+        <paper-tab>Open Source</paper-tab>
+        <paper-tab>Pol XXIe s</paper-tab>
+        <paper-tab disabled>
+          <img src="../../images/user.png" class="menu-icon"></img>
+        </paper-tab>
       </paper-tabs>
-      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
-        no-bar>
-        <paper-tab>Initiatives MA</paper-tab>
-        <paper-tab>Bibliographie</paper-tab>
-        <paper-tab>Trouver des sources</paper-tab>
-      </paper-tabs>
-      <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
-        no-bar>
-        <paper-tab>M chat Net</paper-tab>
-        <paper-tab>Data Pol</paper-tab>
-        <paper-tab>Pirate</paper-tab>
-      </paper-tabs>
-    </iron-pages>
+      
+      <!-- Routing to submenus -->
+      <iron-pages selected="[[_decrement(selectedMain)]]">
+        <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+          no-bar>
+          <paper-tab>BonneP</paper-tab>
+          <paper-tab>Trouver</paper-tab>
+          <paper-tab>Media</paper-tab>
+          <paper-tab>A propos</paper-tab>
+        </paper-tabs>
+        <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+          no-bar>
+          <paper-tab>Introduction text</paper-tab>
+          <paper-tab>TimelineJS</paper-tab>
+          <paper-tab>Tableaux et schémas</paper-tab>
+          <paper-tab>Tribunes</paper-tab>
+        </paper-tabs>
+        <div></div>
+        <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+          no-bar>
+          <paper-tab>Com WT</paper-tab>
+          <paper-tab>Atlantic</paper-tab>
+          <paper-tab>IAS</paper-tab>
+        </paper-tabs>
+        <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+          no-bar>
+          <paper-tab>Doctrine</paper-tab>
+          <paper-tab>Concept</paper-tab>
+        </paper-tabs>
+        <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+          no-bar>
+          <paper-tab>Initiatives MA</paper-tab>
+          <paper-tab>Bibliographie</paper-tab>
+          <paper-tab>Trouver des sources</paper-tab>
+        </paper-tabs>
+        <paper-tabs class="secondary-paper-tabs" selected="{{selectedSecond}}"
+          no-bar>
+          <paper-tab>M chat Net</paper-tab>
+          <paper-tab>Data Pol</paper-tab>
+          <paper-tab>Pirate</paper-tab>
+        </paper-tabs>
+      </iron-pages>
+    </div>
     
     <!-- Routing to page content -->
     <iron-pages id="submenusroutes" selected="[[_decrement(selectedMain)]]">
@@ -132,6 +155,29 @@
     Polymer({
       is: "rochd-app",
       properties: {
+        
+        // Page names in URLs corresponding to the different tabs in the main menu
+        pages: {
+          type: Array,
+          value: [
+            "accueil",
+            "exception",
+            "concept",
+            "projection",
+            "gamification",
+            "opensource",
+            "polxxies"
+          ],
+          readOnly: true
+        },
+        
+        // Useful to make the iron-select event enabled only when the dom is ready
+        // (otherwise, an infinite loop is triggered)
+        isDomReady: {
+          type: Boolean,
+          value: false
+        },
+        
         // Each row of the following table contains the list of items in the submenu,
         // for each menu
         subMenusMap: Array,
@@ -140,7 +186,8 @@
         // Warning: starts at 1
         selectedMain: {
           type: Number,
-          value: 1
+          value: 1,
+          observer: "_mapURL"
         },
         
         // Index of the selected item in the secondary menu
@@ -151,6 +198,12 @@
       },
       _decrement: function(n) {
         return n-1;
+      },
+      _mapURL: function() {
+        if (this.isDomReady) {
+          window.location.href = "/" + this.pages[this.selectedMain-1] + "/" +
+            this.subMenusMap[this.selectedMain-1][0];
+        }
       },
       ready: function() {
         // Sub-menus map initialization
@@ -167,31 +220,42 @@
           this.subMenusMap.push(items);
         }
         
+        if (this.routeData.page === "") {
+          window.location.href = "/" + this.pages[0] + "/" +
+            this.subMenusMap[this.selectedMain-1][0];
+        } else if (this.routeData.page) {
+          this.selectedMain = this.pages.indexOf(this.routeData.page) + 1;
+        }
+        
         // Makes the submenu items scroll to the right content section
         document.querySelector(".secondary-paper-tabs").addEventListener(
           "iron-select", function() {
-          var app = document.querySelector("rochd-app");
-          document.querySelector("#" + app.subMenusMap[app.selectedMain-1]
-            [app.selectedSecond])
-            .scrollIntoView();
+            var app = document.querySelector("rochd-app");
+            if (app.isDomReady) {
+              window.location.href = "/" + app.pages[app.selectedMain-1] + "/" +
+                app.subMenusMap[app.selectedMain-1][app.selectedSecond];
+            }
           }
         );
+        
       },
       
-      // This function can be used from anywhere in the app in order to navigate to a
-      // particular component (it takes its id as an argument)
-      viewAndScrollTo: function(id) {
-        var subMenuIdx = -1;
-        var itemIdx = -1;
-        while (itemIdx < 0 && ++subMenuIdx < this.subMenusMap.length)
-          itemIdx = this.subMenusMap[subMenuIdx].indexOf(id);
-        
-        if (itemIdx >= 0) {
-          this.selectedMain = subMenuIdx+1;
-          this.selectedSecond = itemIdx;
-        } else {
-          console.error("Component with id '" + id + "' has not been found");
-        }
+      attached: function() {
+        this.async(function() {
+          if (this.routeTail.path.length > 1) {
+            var sectionName = this.routeTail.path.substring(1);
+            var sectionIdx = this.subMenusMap[this.selectedMain-1].indexOf(sectionName);
+            if (sectionIdx > -1) {
+              this.selectedSecond = sectionIdx;              
+              var offset = (this.subMenusMap[this.selectedMain-1].length > 1) ? -100 : -50;
+              var scrollPos = document.querySelector("#" + sectionName).offsetTop +
+                offset;
+              window.scroll(0, scrollPos);
+            }
+          }
+          
+          this.isDomReady = true;
+        });
       }
     });
   </script>
