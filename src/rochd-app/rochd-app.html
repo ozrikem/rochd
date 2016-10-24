@@ -42,7 +42,7 @@
       }
     </style>
     
-    <app-location route="{{route}}"></app-location>
+    <app-location route="{{route}}" use-hash-as-path></app-location>
     <app-route
       route="{{route}}"
       pattern="/:page"
@@ -171,13 +171,6 @@
           readOnly: true
         },
         
-        // Useful to make the iron-select event enabled only when the dom is ready
-        // (otherwise, an infinite loop is triggered)
-        isDomReady: {
-          type: Boolean,
-          value: false
-        },
-        
         // Each row of the following table contains the list of items in the submenu,
         // for each menu
         subMenusMap: Array,
@@ -187,25 +180,77 @@
         selectedMain: {
           type: Number,
           value: 1,
-          observer: "_mapURL"
+          observer: "_changePageInURL"
         },
         
         // Index of the selected item in the secondary menu
         selectedSecond: {
           type: Number,
-          value: 0
+          value: 0,
+          observer: "_changeSectionInURLAndScroll"
         }
       },
+      
+      // Observers when the page or the section changes in the URL
+      observers: [
+        '_routeDataChanged(routeData.page)',
+        '_routeTailChanged(routeTail.path)'
+      ],
+      
+      // Useful to decrement this.selectedMain in the one-way binding pattern
+      // (since this.selectedMain starts at 1)
       _decrement: function(n) {
         return n-1;
       },
-      _mapURL: function() {
-        if (this.isDomReady) {
-          window.location.href = "/" + this.pages[this.selectedMain-1] + "/" +
-            this.subMenusMap[this.selectedMain-1][0];
+      
+      // Fired when the page changes in the URL
+      _routeDataChanged: function() {
+        if (this.subMenusMap && this.routeData && this.routeData.page) {
+          this.selectedMain = this.pages.indexOf(this.routeData.page) + 1;
         }
       },
-      ready: function() {
+      
+      // Fired when the tail changes in the URL
+      _routeTailChanged: function() {
+        if (this.subMenusMap &&this.routeTail && this.routeTail.path &&
+          this.routeTail.path.length > 1) {
+          this.selectedSecond = this.subMenusMap[this.selectedMain-1].indexOf(
+            this.routeTail.path.substring(1));
+            
+          // Scrolling to the section  
+          var sectionName = this.routeTail.path.substring(1);
+          var sectionIdx = this.subMenusMap[this.selectedMain-1].indexOf(sectionName);
+          if (sectionIdx > -1) {
+            this.selectedSecond = sectionIdx;              
+            var offset = (this.subMenusMap[this.selectedMain-1].length > 1) ? -100 : -50;
+            var scrollPos = document.querySelector("#" + sectionName).offsetTop +
+              offset;
+            setTimeout(function() {
+              window.scroll(0, scrollPos);
+            }, 100);
+          }
+        }
+      },
+      
+      // Fired when this.selectedMain changes
+      _changePageInURL: function() {
+        if (this.subMenusMap && this.selectedMain >= 0) {
+          if (this.selectedSecond < 0) {
+            this.selectedSecond = 0;
+          }
+        }
+      },
+      
+      // Fired when this.selectedSecond changes
+      _changeSectionInURLAndScroll: function() {
+        if (this.subMenusMap && this.selectedSecond >= 0) {
+          window.location.hash = "/" + this.pages[this.selectedMain-1] + "/" +
+            this.subMenusMap[this.selectedMain-1][this.selectedSecond];
+        }
+      },
+      
+      // Fired when the component is attached to the document
+      attached: function() {
         // Sub-menus map initialization
         var subMenusRoutes = document.querySelector("#submenusroutes");
         this.subMenusMap = [];
@@ -220,43 +265,46 @@
           this.subMenusMap.push(items);
         }
         
-        if (this.routeData.page === "") {
-          window.location.href = "/" + this.pages[0] + "/" +
-            this.subMenusMap[this.selectedMain-1][0];
-        } else if (this.routeData.page) {
-          this.selectedMain = this.pages.indexOf(this.routeData.page) + 1;
-        }
-        
-        // Makes the submenu items scroll to the right content section
-        document.querySelector(".secondary-paper-tabs").addEventListener(
-          "iron-select", function() {
-            var app = document.querySelector("rochd-app");
-            if (app.isDomReady) {
-              window.location.href = "/" + app.pages[app.selectedMain-1] + "/" +
-                app.subMenusMap[app.selectedMain-1][app.selectedSecond];
-            }
-          }
-        );
-        
-      },
-      
-      attached: function() {
-        this.async(function() {
-          if (this.routeTail.path.length > 1) {
-            var sectionName = this.routeTail.path.substring(1);
-            var sectionIdx = this.subMenusMap[this.selectedMain-1].indexOf(sectionName);
-            if (sectionIdx > -1) {
-              this.selectedSecond = sectionIdx;              
-              var offset = (this.subMenusMap[this.selectedMain-1].length > 1) ? -100 : -50;
-              var scrollPos = document.querySelector("#" + sectionName).offsetTop +
-                offset;
-              window.scroll(0, scrollPos);
-            }
+        // Handling initial URL
+        //
+        // Incomplete: no page and no section
+        if (this.route.path === "" || this.route.path === "/" ||
+          this.routeData.page === "" || this.routeData.page === "/") {
+          window.location.hash = "/" + this.pages[0] + "/" + this.subMenusMap[0][0];
+          
+        // Incomplete: page provided but no section
+        } else if (this.routeTail && this.routeTail.path &&
+          (this.routeTail.path === "" || this.routeTail.path === "/")) {
+          var page = (this.routeData.page.substring(0,1) === "/") ?
+            this.routeData.page.substring(1) : this.routeData.page;
+          var pageIdx = this.pages.indexOf(page);
+          if (pageIdx < 0) {
+            // if the section is not recognized, go to the first one
+            window.location.hash = "/" + this.pages[0] + "/" + this.subMenusMap[0][0];
+          } else {
+            window.location.hash = "/" + page + "/" + this.subMenusMap[pageIdx][0];
           }
           
-          this.isDomReady = true;
-        });
-      }
+        // Complete: page and section provided, scrolling directly
+        } else {
+          this.selectedMain = -1;
+          this.selectedSecond = -1;
+          this._routeDataChanged();
+          this._routeTailChanged();
+        }
+        
+        // When clicking on the menu, this.selectedSecond has to be reinitialized to 0
+        // (here put to -1 then put to 0 in _changePageInURL, so that the observer is
+        // fired only once).
+        // This is useful to distiguish between the cases when the page changes because
+        // of an actual user click on the menu or after hitting the back button
+        document.querySelector(".main-paper-tabs").addEventListener(
+          "iron-activate", function() {
+            var app = document.querySelector("rochd-app");
+            app.selectedSecond = -1;
+          }
+        );
+      },
     });
   </script>
 </dom-module>
