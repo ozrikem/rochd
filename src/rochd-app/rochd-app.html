@@ -1,4 +1,6 @@
 <link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="find-bookstore.html">
+
 
 <dom-module id="rochd-app">
   <template>
@@ -7,21 +9,12 @@
         display: block;
       }
     </style>
-    <h2>Hello [[prop1]]</h2>
+    <find-bookstore></find-bookstore>
   </template>
 
   <script>
     Polymer({
-
-      is: 'rochd-app',
-
-      properties: {
-        prop1: {
-          type: String,
-          value: 'rochd-app',
-        },
-      },
-
+      is: 'rochd-app'
     });
   </script>
 </dom-module>

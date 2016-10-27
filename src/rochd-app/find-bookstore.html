@@ -1,0 +1,38 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+<link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../../bower_components/iron-pages/iron-pages.html">
+
+<dom-module id="find-bookstore">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        width: 100%;
+      }
+    </style>
+    <h2 style="text-align: center;color: red;">Trouver le livre</h2>
+    <paper-tabs selected="{{cityIdx}}">
+      <paper-tab>Casablanca</paper-tab>
+      <paper-tab>Rabat</paper-tab>
+      <paper-tab>Tanger</paper-tab>
+      <paper-tab>Marrakech</paper-tab>
+      <paper-tab>Fes</paper-tab>
+      <paper-tab>Agadir</paper-tab>
+      <paper-tab>El Jadida</paper-tab>
+    </paper-tabs>
+    <iron-pages selected="{{cityIdx}}">
+      <div>Chatr</div>
+      <div>Ecume des pages</div>
+      <div>Librairie</div>
+      <div>Iwa chouf</div>
+      <div>Bouni</div>
+      <div>Lima</div>
+      <div>Kifach</div>
+    </iron-pages>
+  </template>
+  <script>
+    Polymer({
+      is: 'find-bookstore'
+    });
+  </script>
+</dom-module>
