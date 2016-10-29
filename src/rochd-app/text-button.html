@@ -1,0 +1,43 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="text-button">
+
+  <template>
+
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+<h1 style="text-align:center">[[title]]</h1>
+        
+<style type="text/css">
+ .button {
+  position:absolute;
+    right:15px;
+    top:145px;
+ }
+ .button:hover {
+  background-color:rgba(255,204,0,0.8);
+ }
+</style>
+<body>
+ <div class="button">
+  <input type="button" value=[[textinbutton]]>
+ </div> 
+</body>
+
+
+        <p>
+<br />
+[[text]]
+        </p>
+
+
+  </template>
+</dom-module>
+
+
+
+
